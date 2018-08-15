@@ -49,7 +49,7 @@ import org.springframework.util.Assert;
  * @see #getResourceByPath
  * @see GenericApplicationContext
  */
-// 程序的入口
+// 程序的入口1
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext {
 
 	@Nullable
