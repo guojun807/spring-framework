@@ -1,3 +1,4 @@
+// 定义插件的依赖中心
 buildscript {
 	repositories {
 		maven { url "https://repo.spring.io/plugins-release" }
@@ -9,13 +10,14 @@ buildscript {
 }
 
 // 3rd party plugin repositories can be configured in settings.gradle
+//引入插件
 plugins {
 	id "io.spring.dependency-management" version "1.0.5.RELEASE" apply false
 	id "org.jetbrains.kotlin.jvm" version "1.2.60" apply false
 	id "org.jetbrains.dokka" version "0.9.17"
 	id "org.asciidoctor.convert" version "1.5.7"
 }
-
+//定义属性
 ext {
 	linkHomepage = 'https://projects.spring.io/spring-framework'
 	linkCi = 'https://build.spring.io/browse/SPR'
@@ -23,7 +25,7 @@ ext {
 	linkScmUrl = 'https://github.com/spring-projects/spring-framework'
 	linkScmConnection = 'scm:git:git://github.com/spring-projects/spring-framework.git'
 	linkScmDevConnection = 'scm:git:ssh://git@github.com:spring-projects/spring-framework.git'
-
+    // 过滤掉 spring-build-src spring-framework-bom
 	moduleProjects = subprojects.findAll {
 		!it.name.equals('spring-build-src') && !it.name.equals('spring-framework-bom')
 	}
@@ -54,7 +56,7 @@ ext {
 		exclude group: "org.slf4j", module: "jcl-over-slf4j"
 	}
 }
-
+// 配置所有的模块
 configure(allprojects) { project ->
 	group = "org.springframework"
 	version = qualifyVersionIfNecessary(version)
@@ -240,6 +242,10 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 		classifier = "javadoc"
 		from javadoc
 	}
+
+    task bbc(type:Test){
+        include '**/*BillcodeTest.*'
+    }
 
 	artifacts {
 		archives sourcesJar
