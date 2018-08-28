@@ -3,6 +3,7 @@ package beans;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import store.guojun.beans.MyTestBean;
@@ -18,6 +19,8 @@ public class BeanFactoryTest {
 
 	@Test
 	public void BeanFactoryTest2(){
-		new ClassPathXmlApplicationContext();
+		ApplicationContext ac = new ClassPathXmlApplicationContext("application.xml");
+		MyTestBean myTestBean = (MyTestBean)ac.getBean("myTestBean");
+		System.out.println(myTestBean.getTestStr());
 	}
 }

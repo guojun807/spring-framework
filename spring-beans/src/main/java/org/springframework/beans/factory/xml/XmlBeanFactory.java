@@ -74,8 +74,11 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 	 * @param parentBeanFactory parent bean factory
 	 * @throws BeansException in case of loading or parsing errors
 	 */
+	// bean工厂实现
 	public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
+		//这只类加载器  忽略的内容放入hashset中
 		super(parentBeanFactory);
+		//加载类
 		this.reader.loadBeanDefinitions(resource);
 	}
 

@@ -167,11 +167,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	/**
 	 * Create a new AbstractAutowireCapableBeanFactory.
+	 过滤掉 BeanNameAware BeanNameAware BeanClassLoaderAware
 	 */
 	public AbstractAutowireCapableBeanFactory() {
+		// 未执行任何代码,父类内容为空
 		super();
+		// ignoredDependencyInterfaces:set 添加需要忽略的内容
 		ignoreDependencyInterface(BeanNameAware.class);
-		ignoreDependencyInterface(BeanFactoryAware.class);
+		ignoreDependencyInterface(BeanNameAware.class);
 		ignoreDependencyInterface(BeanClassLoaderAware.class);
 	}
 
@@ -181,6 +184,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	public AbstractAutowireCapableBeanFactory(@Nullable BeanFactory parentBeanFactory) {
 		this();
+		//设置定义类加载器
 		setParentBeanFactory(parentBeanFactory);
 	}
 
