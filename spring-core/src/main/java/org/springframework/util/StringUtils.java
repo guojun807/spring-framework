@@ -631,11 +631,20 @@ public abstract class StringUtils {
 	 * notice that Windows separators ("\") are replaced by simple slashes.
 	 * @param path the original path
 	 * @return the normalized path
+	 *
+	 * 通过抑制“path/..”和之类的序列来规范化路径
+	 * 内部简单点。
 	 */
+
+	// \反斜杠替换成斜杠/
 	public static String cleanPath(String path) {
+		// 判断是否为空 hasLength不为空返回true
 		if (!hasLength(path)) {
+			//路径为空则直接返回
 			return path;
 		}
+		//  WINDOWS_FOLDER_SEPARATOR: "\\"  FOLDER_SEPARATOR: /
+		// \\替换成/
 		String pathToUse = replace(path, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
 
 		// Strip prefix from path to analyze, to not treat it as part of the
@@ -644,29 +653,37 @@ public abstract class StringUtils {
 		// strip the first "core" directory while keeping the "file:" prefix.
 		int prefixIndex = pathToUse.indexOf(':');
 		String prefix = "";
+		// 判断是否有":"
 		if (prefixIndex != -1) {
+			// 如果有: 截取:之前的字符串,包括:  SEPARATOR:分离器
 			prefix = pathToUse.substring(0, prefixIndex + 1);
+			// 判断前缀是否包含 /
 			if (prefix.contains(FOLDER_SEPARATOR)) {
 				prefix = "";
 			}
 			else {
+				// 路径等于":"后面的内容
 				pathToUse = pathToUse.substring(prefixIndex + 1);
 			}
 		}
+		// 如果路径以 / 开头的
 		if (pathToUse.startsWith(FOLDER_SEPARATOR)) {
 			prefix = prefix + FOLDER_SEPARATOR;
+			//去掉前缀 /
 			pathToUse = pathToUse.substring(1);
 		}
-
+		// 把路径按照/拆分成数组
 		String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
 		LinkedList<String> pathElements = new LinkedList<>();
 		int tops = 0;
 
 		for (int i = pathArray.length - 1; i >= 0; i--) {
 			String element = pathArray[i];
+			// 如果路径等于当前路径
 			if (CURRENT_PATH.equals(element)) {
 				// Points to current directory - drop it.
 			}
+			//等于上级路径
 			else if (TOP_PATH.equals(element)) {
 				// Registering top path found.
 				tops++;
@@ -1181,6 +1198,7 @@ public abstract class StringUtils {
 	 * @return an array of the tokens in the list
 	 * @see #tokenizeToStringArray
 	 */
+	// 处理路径 delimiter界定符: folder_separatar:/
 	public static String[] delimitedListToStringArray(
 			@Nullable String str, @Nullable String delimiter, @Nullable String charsToDelete) {
 
@@ -1201,11 +1219,14 @@ public abstract class StringUtils {
 			int pos = 0;
 			int delPos;
 			while ((delPos = str.indexOf(delimiter, pos)) != -1) {
+				// deleteAny 删除给定字符串
+				//字符串拆分后放入数组中
 				result.add(deleteAny(str.substring(pos, delPos), charsToDelete));
 				pos = delPos + delimiter.length();
 			}
 			if (str.length() > 0 && pos <= str.length()) {
 				// Add rest of String, but not in case of empty input.
+				// 把最后的内容放入数组中,即/后面的内容
 				result.add(deleteAny(str.substring(pos), charsToDelete));
 			}
 		}

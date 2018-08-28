@@ -62,6 +62,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	 * @see java.lang.ClassLoader#getResourceAsStream(String)
 	 * @see org.springframework.util.ClassUtils#getDefaultClassLoader()
 	 */
+	//根据配置文件路径读取
 	public ClassPathResource(String path) {
 		this(path, (ClassLoader) null);
 	}
@@ -70,18 +71,28 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	 * Create a new {@code ClassPathResource} for {@code ClassLoader} usage.
 	 * A leading slash will be removed, as the ClassLoader resource access
 	 * methods will not accept it.
-	 * @param path the absolute path within the classpath
-	 * @param classLoader the class loader to load the resource with,
+	 * @param path the absolute path within the classpath                     路径类路径中的绝对路径
+	 * @param classLoader the class loader to load the resource with,         用来装载资源的类装入器
 	 * or {@code null} for the thread context class loader
 	 * @see ClassLoader#getResourceAsStream(String)
+	 *
+	  为{@code ClassLoader}的使用创建一个新的{@code ClassPathResource}。
+	  将删除一个前导斜杠，作为ClassLoader资源访问
+	 * 参考
+	 * https://blog.csdn.net/w1196726224/article/details/54428493
 	 */
 	public ClassPathResource(String path, @Nullable ClassLoader classLoader) {
+		//判断路径是否为空
 		Assert.notNull(path, "Path must not be null");
+		//路径转换 \替换成/
 		String pathToUse = StringUtils.cleanPath(path);
+		// 参考 https://www.cnblogs.com/macwhirr/p/8116583.html
+		//去掉斜杠, Class.getClassLoader.getResourceAsStream(String path) ：默认则是从ClassPath根下获取，path不能以’/'开头，最终是由ClassLoader获取资源。
 		if (pathToUse.startsWith("/")) {
 			pathToUse = pathToUse.substring(1);
 		}
 		this.path = pathToUse;
+		//设置类加载器
 		this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
 	}
 
@@ -125,6 +136,8 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 
 	/**
 	 * Return the ClassLoader that this resource will be obtained from.
+	 * 获取类加载器,
+	 * 如果 clazz 定义则获取 clazz 的类加载器,否则获取当前类的类加载器
 	 */
 	@Nullable
 	public final ClassLoader getClassLoader() {
