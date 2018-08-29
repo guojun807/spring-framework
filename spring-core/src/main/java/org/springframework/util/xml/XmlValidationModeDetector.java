@@ -87,21 +87,27 @@ public class XmlValidationModeDetector {
 	 * @see #VALIDATION_DTD
 	 * @see #VALIDATION_XSD
 	 */
+	//检测xml验证模式  VALIDATION_DTD 以 <!DOCTYPE开头 XSD则需要指定命名空间
 	public int detectValidationMode(InputStream inputStream) throws IOException {
 		// Peek into the file to look for DOCTYPE.
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
 			boolean isDtdValidated = false;
 			String content;
+			// 读取每一行数据
 			while ((content = reader.readLine()) != null) {
+				// 截取注释以后的内容
+				// <?xml version="1.0" encoding="UTF-8"?><aaa>hello</aaa>  <!--aa--> <bbb>hello</bbb> 只留下" <bbb>hello</bbb>",有空格,注释前面的内容会忽略掉
 				content = consumeCommentTokens(content);
-				if (this.inComment || !StringUtils.hasText(content)) {
+				// 如果读取的行是空或者是注释则略过
+				if (this.inComment || !StringUtils.hasText(content)) {// StringUtils.hasText判断是否为空
 					continue;
-				}
+				}//判断是否包含 DOCTYPE
 				if (hasDoctype(content)) {
 					isDtdValidated = true;
 					break;
 				}
+				//判断<后面是否为字母,如果是字母返回true
 				if (hasOpeningTag(content)) {
 					// End of meaningful data...
 					break;
@@ -132,6 +138,7 @@ public class XmlValidationModeDetector {
 	 * in an XML comment then this method always returns false. It is expected that all comment
 	 * tokens will have consumed for the supplied content before passing the remainder to this method.
 	 */
+	//判断<后面是否为字母
 	private boolean hasOpeningTag(String content) {
 		if (this.inComment) {
 			return false;
@@ -149,6 +156,7 @@ public class XmlValidationModeDetector {
 	 */
 	@Nullable
 	private String consumeCommentTokens(String line) {
+		// 判断 是否包含<!-- 和 -->,未包含则直接返回
 		if (!line.contains(START_COMMENT) && !line.contains(END_COMMENT)) {
 			return line;
 		}
@@ -176,10 +184,12 @@ public class XmlValidationModeDetector {
 	 * @see #commentToken(String, String, boolean)
 	 */
 	private int startComment(String line) {
+		//返回包含 <!-- 字符串的下标
 		return commentToken(line, START_COMMENT, true);
 	}
 
 	private int endComment(String line) {
+		//返回包含 --> 字符串的下标
 		return commentToken(line, END_COMMENT, false);
 	}
 
@@ -188,6 +198,7 @@ public class XmlValidationModeDetector {
 	 * in comment parse state to the supplied value. Returns the index into the content
 	 * which is after the token or -1 if the token is not found.
 	 */
+	//判断是否包含某个字符串
 	private int commentToken(String line, String token, boolean inCommentIfPresent) {
 		int index = line.indexOf(token);
 		if (index > - 1) {
