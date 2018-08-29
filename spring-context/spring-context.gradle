@@ -23,6 +23,7 @@ dependencies {
 	optional("org.hibernate:hibernate-validator:5.4.2.Final")
 	optional("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 	optional("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
+    testCompile("javax.money:money-api:1.0.3")
 	testCompile("org.codehaus.groovy:groovy-xml:${groovyVersion}")
 	testCompile("org.codehaus.groovy:groovy-jsr223:${groovyVersion}")
 	testCompile("org.codehaus.groovy:groovy-test:${groovyVersion}")

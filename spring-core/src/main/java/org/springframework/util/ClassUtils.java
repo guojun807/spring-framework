@@ -99,8 +99,8 @@ public abstract class ClassUtils {
 	private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<>(32);
 
 	/**
-	 * Map with common Java language class name as key and corresponding Class as value.
-	 * Primarily for efficient deserialization of remote invocations.
+	 * Map with common Java language class name as key and corresponding Class as value.映射以通用Java语言类名为键，相应类为值
+	 * Primarily for efficient deserialization of remote invocations.主要用于远程调用的高效反序列化。
 	 */
 	private static final Map<String, Class<?>> commonClassCache = new HashMap<>(64);
 

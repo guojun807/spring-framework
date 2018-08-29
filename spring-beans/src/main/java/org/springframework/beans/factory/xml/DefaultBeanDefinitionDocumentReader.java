@@ -90,6 +90,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * <p>Opens a DOM Document; then initializes the default settings
 	 * specified at the {@code <beans/>} level; then parses the contained bean definitions.
 	 */
+	//注册bean
 	@Override
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
 		this.readerContext = readerContext;
@@ -117,6 +118,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	/**
 	 * Register each bean definition within the given root {@code <beans/>} element.
 	 */
+	//注册bean
 	@SuppressWarnings("deprecation")  // for Environment.acceptsProfiles(String...)
 	protected void doRegisterBeanDefinitions(Element root) {
 		// Any nested <beans> elements will cause recursion in this method. In
