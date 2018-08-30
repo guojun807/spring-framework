@@ -54,6 +54,7 @@ public abstract class BeanDefinitionReaderUtils {
 	 * @return the bean definition
 	 * @throws ClassNotFoundException if the bean class could not be loaded
 	 */
+	// 创建用于承载属性 AbstractBeanDefinition 类型的 GenericBeanDefinition
 	public static AbstractBeanDefinition createBeanDefinition(
 			@Nullable String parentName, @Nullable String className, @Nullable ClassLoader classLoader) throws ClassNotFoundException {
 
@@ -65,8 +66,8 @@ public abstract class BeanDefinitionReaderUtils {
 			}
 			else {
 				bd.setBeanClassName(className);
-			}
 		}
+			}
 		return bd;
 	}
 
