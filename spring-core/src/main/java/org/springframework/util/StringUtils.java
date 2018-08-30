@@ -109,7 +109,7 @@ public abstract class StringUtils {
 	}
 
 	/**
-	 * Check that the given {@code String} is neither {@code null} nor of length 0.
+	 * 判断是否为空 不为空返回true，否则返回false Check that the given {@code String} is neither {@code null} nor of length 0.
 	 * <p>Note: this method returns {@code true} for a {@code String} that
 	 * purely consists of whitespace.
 	 * @param str the {@code String} to check (may be {@code null})

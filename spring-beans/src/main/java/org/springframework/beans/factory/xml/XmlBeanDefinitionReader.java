@@ -261,10 +261,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * Return the EntityResolver to use, building a default resolver
 	 * if none specified.
 	 */
+	// 获取EntityResolver， 如果有resourceLoader，则直接使用，没有则使用默认的resourceLoader
 	protected EntityResolver getEntityResolver() {
 		if (this.entityResolver == null) {
 			// Determine default EntityResolver to use.
-			ResourceLoader resourceLoader = getResourceLoader();
+			ResourceLoader resourceLoader = getResourceLoader();// 默认PathMatchingResourcePatternResolver
 			if (resourceLoader != null) {
 				this.entityResolver = new ResourceEntityResolver(resourceLoader);
 			} else {
@@ -458,10 +459,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
 		return this.documentLoader.loadDocument(
 				inputSource,
-				getEntityResolver(),//
+				getEntityResolver(),// TODO 暂时不知用处
 				this.errorHandler,// 错误处理器  TODO 待研究
 				getValidationModeForResource(resource),// 获取对 XML 文件的验证模式
-				isNamespaceAware()
+				isNamespaceAware()// TODO 待研究
 		);
 	}
 
@@ -546,10 +547,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
-		// 实例化dom解析器
+		// 实例化dom解析器  使用createBeanDefinitionDocumentReader实例化BeanDefinitionDocumentReader
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-		// 获取注册器
+		// 记录统计前 BeanDefinition 的加载个数
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		// 解析xml并注册bean 在实例化 BeanDefinitionReader 时候会将 BeanDefinitionRegistry传入，默认使用继承自DefaultListableBeanFactory的子类
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
