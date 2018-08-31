@@ -316,13 +316,13 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * Process the given bean element, parsing the bean definition
 	 * and registering it with the registry.
 	 */
-	//bean 逻辑处理
+	//bean 标签逻辑处理
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
-				// Register the final decorated instance.
+				// Register the final decorated instance.//注册bean
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			}
 			catch (BeanDefinitionStoreException ex) {

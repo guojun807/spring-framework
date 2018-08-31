@@ -6,5 +6,33 @@
 				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<bean id="myTestBean" class="store.guojun.beans.MyTestBean">
+		<meta key="hello" value="world"/>
+	</bean>
+	<bean id="getUserBeanTest" class="store.guojun.beans.lookup.GetUserBeanTest">
+		<!-- 每一个lookup创建一个实例LookupOverride，该实例重写了hashcode,相同的name只会储存最后一个，所以下面
+		的lookup最后调用的是teacher
+		存放在Set<MethodOverride>集合中，该集合是GenericBeanDefinition的一个属性 -->
+		<lookup-method name="getBean" bean="student"></lookup-method>
+		<lookup-method name="getBean" bean="teacher"></lookup-method>
+		<!--
+		  每一个meta 创建一个实例 BeanMetadataAttribute(key为name,value=value)，
+		  把每个实例放入 GenericBeanDefinition 的 Map(String, Object) attributes 属性中
+		-->
+		<meta key="aaa" value="bbb"/>
+		<meta key="hello" value="world"/>
+	</bean>
+	<bean id="teacher" class="store.guojun.beans.lookup.Teacher"></bean>
+	<bean id="student" class="store.guojun.beans.lookup.Student"></bean>
+
+	<bean id="helloBean" class="store.guojun.beans.constructor.HelloBean">
+		<constructor-arg index="1">
+			<value>北京</value>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<value>zhangsan</value>
+		</constructor-arg>
+		<constructor-arg index="0">
+			<value>张三</value>
+		</constructor-arg>
 	</bean>
 </beans>

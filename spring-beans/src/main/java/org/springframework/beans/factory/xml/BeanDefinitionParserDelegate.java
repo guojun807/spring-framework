@@ -441,7 +441,7 @@ public class BeanDefinitionParserDelegate {
 			// 检查名称是否唯一
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-		// 创建用于承载属性 AbstractBeanDefinition 类型的 GenericBeanDefinition
+		// 解析bean标签里各个属性，解析后放入到GenericBeanDefinition中  创建用于承载属性 AbstractBeanDefinition 类型的 GenericBeanDefinition
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {//判断beanName 是否为空，如果为空则生成beanName
@@ -532,7 +532,7 @@ public class BeanDefinitionParserDelegate {
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			// 提取 description
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
-			// 解析元数据
+			// 解析元数据 meta
 			parseMetaElements(ele, bd);
 			// 解析 lookup-method 属性
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
@@ -664,17 +664,22 @@ public class BeanDefinitionParserDelegate {
 		return BeanDefinitionReaderUtils.createBeanDefinition(
 				parentName, className, this.readerContext.getBeanClassLoader());
 	}
-
+	// 解析元数据，attributeAccessor= bd
 	public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
 		NodeList nl = ele.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, META_ELEMENT)) {
 				Element metaElement = (Element) node;
+				// 获取 key
 				String key = metaElement.getAttribute(KEY_ATTRIBUTE);
+				// 获取 value
 				String value = metaElement.getAttribute(VALUE_ATTRIBUTE);
+				// 使用 key value 构造 BeanMetadataAttribute
 				BeanMetadataAttribute attribute = new BeanMetadataAttribute(key, value);
+				// extractSource TODO 暂时不知
 				attribute.setSource(extractSource(metaElement));
+				// 记录信息
 				attributeAccessor.addMetadataAttribute(attribute);
 			}
 		}
@@ -744,7 +749,8 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Parse lookup-override sub-elements of the given bean element.
-	 */
+	 * 解析 lookup-method 属性
+	 */  //  MethodOverrides 有set集合 Set<MethodOverride> overrides = Collections.synchronizedSet(new LinkedHashSet<>(2));
 	public void parseLookupOverrideSubElements(Element beanEle, MethodOverrides overrides) {
 		NodeList nl = beanEle.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
@@ -762,16 +768,23 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Parse replaced-method sub-elements of the given bean element.
+	 * 动态替换方法
+	 * <replace-method name="" replacer=""/>
 	 */
 	public void parseReplacedMethodSubElements(Element beanEle, MethodOverrides overrides) {
 		NodeList nl = beanEle.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
+			// 仅当在sprin 默认bean 子元素下，且为 replaced-method生效
 			if (isCandidateElement(node) && nodeNameEquals(node, REPLACED_METHOD_ELEMENT)) {
 				Element replacedMethodEle = (Element) node;
+				// 提取要替换的旧的方法
 				String name = replacedMethodEle.getAttribute(NAME_ATTRIBUTE);
+				// 提取新的替换方法
 				String callback = replacedMethodEle.getAttribute(REPLACER_ATTRIBUTE);
+				// 用ReplaceOverride承载
 				ReplaceOverride replaceOverride = new ReplaceOverride(name, callback);
+
 				// Look for arg-type match elements.
 				List<Element> argTypeEles = DomUtils.getChildElementsByTagName(replacedMethodEle, ARG_TYPE_ELEMENT);
 				for (Element argTypeEle : argTypeEles) {

@@ -1,27 +1,35 @@
 package beans;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.XmlValidationModeDetector;
+import store.guojun.beans.constructor.HelloBean;
+import store.guojun.beans.lookup.GetUserBeanTest;
 import store.guojun.beans.MyTestBean;
 
 import java.io.*;
 
 @SuppressWarnings("deprecation")
 public class BeanFactoryTest {
+	BeanFactory bf = null;
+	@Before
+	public void BeanFactoryTest(){
+		bf = new XmlBeanFactory(new ClassPathResource("application.xml"));
+	}
+
 	@Test
 	public void BeanFactoryTest1(){
 		long time = System.currentTimeMillis();
 		System.out.println(time);
 		// --开始
 
-
-		BeanFactory bf = new XmlBeanFactory(new ClassPathResource("application.xml"));
 		MyTestBean myTestBean = (MyTestBean) bf.getBean("myTestBean");
 		System.out.println(myTestBean.getTestStr());
 
@@ -62,4 +70,27 @@ public class BeanFactoryTest {
 		}
 		new XmlValidationModeDetector();
 	}
+
+	/**
+	 * 测试 解析lookup-methed
+	 * 用于可插拔的配置
+	 */
+	@Test
+	public void BeanFactoryTest5(){
+		BeanDefinition bd = ((XmlBeanFactory) bf).getBeanDefinition("getUserBeanTest");
+		System.out.println(bd.getAttribute("hello"));
+		GetUserBeanTest myTestBean = (GetUserBeanTest) bf.getBean("getUserBeanTest");
+		myTestBean.showMe();
+	}
+
+	/**
+	 * 测试 解析lookup-methed
+	 * 用于可插拔的配置
+	 */
+	@Test
+	public void BeanFactoryTest6(){
+		HelloBean myTestBean = (HelloBean) bf.getBean("helloBean");
+		System.out.println(myTestBean.toString());
+	}
+
 }

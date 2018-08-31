@@ -180,6 +180,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	private MutablePropertyValues propertyValues;
 
 	@Nullable
+	// 存放一些
 	private MethodOverrides methodOverrides;
 
 	@Nullable
