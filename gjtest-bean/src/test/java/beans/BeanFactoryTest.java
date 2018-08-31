@@ -29,7 +29,6 @@ public class BeanFactoryTest {
 		long time = System.currentTimeMillis();
 		System.out.println(time);
 		// --开始
-
 		MyTestBean myTestBean = (MyTestBean) bf.getBean("myTestBean");
 		System.out.println(myTestBean.getTestStr());
 

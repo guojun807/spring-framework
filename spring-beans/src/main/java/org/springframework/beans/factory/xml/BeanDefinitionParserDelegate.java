@@ -710,11 +710,13 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Parse constructor-arg sub-elements of the given bean element.
+	 * 解析构造函数参数
 	 */
 	public void parseConstructorArgElements(Element beanEle, BeanDefinition bd) {
 		NodeList nl = beanEle.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
+			// 标签为 constructor-arg
 			if (isCandidateElement(node) && nodeNameEquals(node, CONSTRUCTOR_ARG_ELEMENT)) {
 				parseConstructorArgElement((Element) node, bd);
 			}
@@ -802,19 +804,26 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Parse a constructor-arg element.
+	 * 解析构造标签
 	 */
 	public void parseConstructorArgElement(Element ele, BeanDefinition bd) {
+		// 提取 index 属性 按照位置
 		String indexAttr = ele.getAttribute(INDEX_ATTRIBUTE);
+		// 提取 type 属性 按照类型 String
 		String typeAttr = ele.getAttribute(TYPE_ATTRIBUTE);
+		// 提取 name 属性 按照名称 adress
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
+		// index 的优先级最高，如果有index，依据index来
 		if (StringUtils.hasLength(indexAttr)) {
 			try {
+				// 获取index 的值
 				int index = Integer.parseInt(indexAttr);
 				if (index < 0) {
 					error("'index' cannot be lower than 0", ele);
 				}
 				else {
 					try {
+						//把index放入实体ConstructorArgumentEntry中，再把实体放入LinkedList中 ParseState 属性 LinkedList<Entry>
 						this.parseState.push(new ConstructorArgumentEntry(index));
 						Object value = parsePropertyValue(ele, bd, null);
 						ConstructorArgumentValues.ValueHolder valueHolder = new ConstructorArgumentValues.ValueHolder(value);
@@ -958,7 +967,7 @@ public class BeanDefinitionParserDelegate {
 
 		boolean hasRefAttribute = ele.hasAttribute(REF_ATTRIBUTE);
 		boolean hasValueAttribute = ele.hasAttribute(VALUE_ATTRIBUTE);
-		if ((hasRefAttribute && hasValueAttribute) ||
+		if ((hasRefAttribute && hasValueAttribute) ||//ref 和 value 不容许同时存在
 				((hasRefAttribute || hasValueAttribute) && subElement != null)) {
 			error(elementName +
 					" is only allowed to contain either 'ref' attribute OR 'value' attribute OR sub-element", ele);
