@@ -441,10 +441,10 @@ public class BeanDefinitionParserDelegate {
 			// 检查名称是否唯一
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-
+		// 创建用于承载属性 AbstractBeanDefinition 类型的 GenericBeanDefinition
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
-			if (!StringUtils.hasText(beanName)) {
+			if (!StringUtils.hasText(beanName)) {//判断beanName 是否为空，如果为空则生成beanName
 				try {
 					if (containingBean != null) {
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
