@@ -210,11 +210,18 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * with, if necessary
 	 * @return the registered singleton object
 	 */
+	// 获取单例
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
+		//全局变量需要同步
 		synchronized (this.singletonObjects) {
+			// 从缓冲中读取获取单例
+			// 首先检查对应的 bean 是否已经加载过,因为 singleton 模式其实就是复用已创建的 bean,所以这一步是必须的
+			// 1、检查缓冲是否已经加载过
 			Object singletonObject = this.singletonObjects.get(beanName);
+			// 如果为空才可以进行 singleton 的 bean 初始化
 			if (singletonObject == null) {
+				/** Flag that indicates whether we're currently within destroySingletons. */
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
 							"Singleton bean creation not allowed while singletons of this factory are in destruction " +
@@ -223,6 +230,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
+				// 2、若没有加载,则记录 beanName 的正在加载状态
+				// 3、加载单例前记录加载状态
+				// 记录加载状态,通过 this.singletonsCurrentlyInCreation.add(beanName) 将当前正要创建的 bean 记录在缓冲中,
+				// 这样便可以对循环依赖进行检测
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
@@ -230,6 +241,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 4、通过调用参数传入的 ObjectFactory 的个体 Object 方法实例化 bean
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -253,12 +265,16 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					// 5、加载单例后的处理方法调用 删除加载的状态
+					// 同步骤 3 的记录加载状态相似,当 bean 加载结束后需要移除缓冲中对该 bean 的正在加载状态的记录。
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 6、将结果记录至缓冲并删除加载 bean 过程中所记录的各种辅助状态
 					addSingleton(beanName, singletonObject);
 				}
 			}
+			// 7、返回处理结果
 			return singletonObject;
 		}
 	}

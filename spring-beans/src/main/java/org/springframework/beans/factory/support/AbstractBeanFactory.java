@@ -289,6 +289,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			// 如果 beanDefinitionMap 中也就是在所有已经加载的类中不包括 beanName 则尝试从 parentBeanFactory 中检测
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
+				// 如果以 & 开始,则去掉多余的 & ,否则返回原有名称
 				String nameToLookup = originalBeanName(name);
 				// 递归到 BeanFactory 中寻找
 				if (parentBeanFactory instanceof AbstractBeanFactory) {
@@ -309,11 +310,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 			// 如果不是仅仅做类型检查则是创建 bean,这里要进行记录
 			if (!typeCheckOnly) {
+				/** Names of beans that have already been created at least once. */
 				markBeanAsCreated(beanName);
 			}
 
 			try {
-				// 将存储 XML 配置文件的 GernericBeanDefinition 转换为 RootBeanDefinition,
+				// 将存储 XML 配置文件的 GenericBeanDefinition 转换为 RootBeanDefinition,
 				// 如果指定 BeanName 是子 Bean的话同时会合并父类的相关属性
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
@@ -1160,7 +1162,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @param name the user-specified name
 	 * @return the original bean name
 	 */
+	// 如果以 & 开始,则去掉多余的 & ,否则返回原有名称
 	protected String originalBeanName(String name) {
+		// 如果 beanName 是以 & 开始的,则去掉所有开头 &,例如 "&&testBean",最后拼接成 只有一个&开头 例如:"&testBean"
 		String beanName = transformedBeanName(name);
 		if (name.startsWith(FACTORY_BEAN_PREFIX)) {
 			beanName = FACTORY_BEAN_PREFIX + beanName;
