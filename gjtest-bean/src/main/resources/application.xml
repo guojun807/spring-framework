@@ -35,4 +35,34 @@
 			<value>张三</value>
 		</constructor-arg>
 	</bean>
+	<!-- 通过构造器注入 -->
+	<!--<bean id="testA" class="store.guojun.beans.depends.TestA">-->
+		<!--<constructor-arg index="0" ref="testB"></constructor-arg>-->
+	<!--</bean>-->
+	<!--<bean id="testB" class="store.guojun.beans.depends.TestB">-->
+		<!--<constructor-arg index="0" ref="testC"></constructor-arg>-->
+	<!--</bean>-->
+	<!--<bean id="testC" class="store.guojun.beans.depends.TestC">-->
+		<!--<constructor-arg index="0" ref="testA"></constructor-arg>-->
+	<!--</bean>-->
+	<!-- 通过set注入 -->
+	<!--<bean id="testA" class="store.guojun.beans.depends.TestA">-->
+		<!--<constructor-arg index="0" ref="testB"></constructor-arg>-->
+	<!--</bean>-->
+	<!--<bean id="testB" class="store.guojun.beans.depends.TestB">-->
+		<!--<constructor-arg index="0" ref="testC"></constructor-arg>-->
+	<!--</bean>-->
+	<!--<bean id="testC" class="store.guojun.beans.depends.TestC">-->
+		<!--<constructor-arg index="0" ref="testA"></constructor-arg>-->
+	<!--</bean>-->
+	<!-- 通过prototype注入 -->
+	<bean id="testA" class="store.guojun.beans.depends.TestA">
+		<property name="testB" ref="testB"></property>
+	</bean>
+	<bean id="testB" class="store.guojun.beans.depends.TestB">
+		<property name="testC" ref="testC"></property>
+	</bean>
+	<bean id="testC" class="store.guojun.beans.depends.TestC">
+		<property name="testA" ref="testA"></property>
+	</bean>
 </beans>

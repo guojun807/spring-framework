@@ -2,8 +2,10 @@ package beans;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -92,4 +94,20 @@ public class BeanFactoryTest {
 		System.out.println(myTestBean.toString());
 	}
 
+	/**
+	 * 测试 循环依赖
+	 */
+	@Test
+	public void BeanFactoryTest7(){
+		try {
+			resolveBeanClass("hello");
+			bf.getBean("testA");
+		} catch (BeansException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void resolveBeanClass( String beanName, final Class<?>... typesToMatch){
+		System.out.println(beanName);
+	}
 }
