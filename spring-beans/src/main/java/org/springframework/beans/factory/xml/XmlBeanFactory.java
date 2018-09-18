@@ -21,6 +21,10 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.io.Resource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 /**
  * Convenience extension of {@link DefaultListableBeanFactory} that reads bean definitions
  * from an XML document. Delegates to {@link XmlBeanDefinitionReader} underneath; effectively
@@ -82,4 +86,12 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 		this.reader.loadBeanDefinitions(resource);
 	}
 
+	public static void main(String[] args) {
+	System.out.println(
+		LocalDate.now().toString()+"==="+
+				LocalTime.now().toString()
+			+"====="+ LocalDateTime.now().toString()
+
+		);
+	}
 }
