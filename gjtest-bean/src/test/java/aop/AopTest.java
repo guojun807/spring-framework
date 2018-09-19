@@ -159,13 +159,41 @@ public class AopTest {
 	@Test
 	public void throwAdviceByXml() {
 		ClassPathXmlApplicationContext cp = new ClassPathXmlApplicationContext("application.xml");
-		Waiter waiter = (Waiter) cp.getBean("throwwaiter");
+		NaiveErrorWaiter waiter = (NaiveErrorWaiter) cp.getBean("throwwaiter");
 		try {
 			waiter.greetTo("小明");
 			waiter.serveTo("小军");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	/**
+	 * xml 配置引介增强
+	 */
+	@Test
+	public void introduceAdviceByXml() {
+		ClassPathXmlApplicationContext cp = new ClassPathXmlApplicationContext("application.xml");
+		NaiveWaiter naiveWaiter = (NaiveWaiter) cp.getBean("formService");
+		try {
+			naiveWaiter.greetTo("张三");
+			naiveWaiter.serveTo("李四");
+
+			Monitorable monitorable = (Monitorable) naiveWaiter;
+			monitorable.setMonitorableActive(true);
+
+			naiveWaiter.greetTo("小明");
+			naiveWaiter.serveTo("小军");
+
+
+
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

@@ -97,6 +97,7 @@
 		  p:interceptorNames="greetAroundAdvice"
 		  p:target-ref="target"
 	/>
+
 	<!-- 依次为:指定代理的接口,如果是多个接口,使用<list> 元素,即代理需要实现的接口
 	 	指定使用的增强
 	 	指定对哪个bean 进行代理  (精通spring4.0)234页
@@ -108,5 +109,15 @@
 		  p:target-ref="naiveErrorWaiter"
 		  p:proxyTargetClass="true"
 	/>
+<!--引介增强 必须强制使用cglib-->
+	<bean id="pmonitor" class="store.guojun.aop.ControllablePerformanceMonitor"></bean>
+	<bean id="forumServiceTarget" class="store.guojun.aop.NaiveWaiter"></bean>
+	<bean id="formService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		p:interfaces="store.guojun.aop.Monitorable"
+		  p:target-ref="forumServiceTarget"
+		  p:interceptorNames="pmonitor"
+		  p:proxyTargetClass="true"
+	>
+	</bean>
 	<!-- proxyTargetClass等于true,使用cglib代理-->
 </beans>
