@@ -71,7 +71,7 @@
 	<!-- aop增强 -->
 	<bean id="greetAdvice" class="store.guojun.aop.GreetingBeforeAdvice"></bean>
 	<bean id="target" class="store.guojun.aop.NaiveWaiter"></bean>
-	<bean id="waiter" class="org.springframework.aop.framework.ProxyFactoryBean"
+	<bean id="waiteradvice" class="org.springframework.aop.framework.ProxyFactoryBean"
 		p:proxyInterfaces="store.guojun.aop.Waiter"
 		p:interceptorNames="greetAdvice"
 		p:target-ref="target"
@@ -120,4 +120,95 @@
 	>
 	</bean>
 	<!-- proxyTargetClass等于true,使用cglib代理-->
+
+	<!-- 静态切面 -->
+	<bean id="sellerTarget" class="store.guojun.aop.Seller"></bean>
+	<bean id="waiterTarget" class="store.guojun.aop.staticadvisor.StaticWaiter"></bean>
+	<!-- 向切面注入一个前置增强 -->
+	<bean id="staticGreetingAdvisor" class="store.guojun.aop.staticadvisor.GreetingAdvisor"
+		  p:advice-ref="greetAdvice"
+	></bean>
+	<!-- 通过一个父bean,定义公共的配置信息
+	 interceptorNames 指定代理的接口,如果是多个接口,使用<list> 元素,即代理需要实现的接口
+	 -->
+	<bean id="parent" abstract="true" class="org.springframework.aop.framework.ProxyFactoryBean"
+		p:interceptorNames="staticGreetingAdvisor"
+		p:proxyTargetClass="true"
+	></bean>
+	<bean id="seller" parent="parent" p:target-ref="sellerTarget"></bean>
+	<bean id="waiter" parent="parent" p:target-ref="waiterTarget"></bean>
+
+	<!-- 静态正则表达式匹配 -->
+	<bean id="regexpAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor"
+		p:advice-ref="greetAdvice">
+		<!-- 用正则表达式定义目标类全限定方法名的匹配模式串 -->
+		<property name="patterns">
+			<list>
+				<!-- 匹配模式串 -->
+				<value>.*greet.*</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="regexpWaiter" class="org.springframework.aop.framework.ProxyFactoryBean"
+		p:interceptorNames="regexpAdvisor"
+	    p:target-ref="waiterTarget"
+	    p:proxyTargetClass="true"
+	></bean>
+
+	<!-- 动态切面 -->
+	<bean id="dynamicAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="pointcut">
+			<bean class="store.guojun.aop.dynamicadvisor.GreetingDynamicPointcut"></bean>
+		</property>
+		<property name="advice">
+			<bean class="store.guojun.aop.GreetingBeforeAdvice"></bean>
+		</property>
+	</bean>
+	<bean id="dynamicWaiter" class="org.springframework.aop.framework.ProxyFactoryBean"
+		p:target-ref="waiterTarget"
+		  p:interceptorNames="dynamicAdvisor"
+		  p:proxyTargetClass="true"
+	></bean>
 </beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
